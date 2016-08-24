@@ -18,9 +18,10 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
 	/** The Serial Version UID for Serializable classes. */
     private static final long serialVersionUID = 1L;
@@ -35,7 +36,7 @@ public class User implements Serializable {
     private long id;
 
     @Column(unique = true)
-    private String username;
+    private String userName;
 
     private String password;
 
@@ -87,12 +88,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
@@ -198,4 +199,35 @@ public class User implements Serializable {
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
     }
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Set<GrantedAuthority> authorities = new HashSet<>();
+		userRoles.forEach(ur -> authorities.add(new Authority(ur.getRole().getName())));
+		return authorities;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }
