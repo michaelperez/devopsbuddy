@@ -21,15 +21,16 @@ public class UserRole implements Serializable {
     public UserRole() {
 
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
+    
     public UserRole(User user, Role role) {
         this.user = user;
         this.role = role;
     }
+    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -18,6 +18,9 @@ import com.devopsbuddy.backend.persistence.domain.backend.UserRole;
 import com.devopsbuddy.backend.persistence.repositories.PlanRepository;
 import com.devopsbuddy.backend.persistence.repositories.RoleRepository;
 import com.devopsbuddy.backend.persistence.repositories.UserRepository;
+import com.devopsbuddy.enums.PlansEnum;
+import com.devopsbuddy.enums.RolesEnum;
+import com.devopsbuddy.utils.UsersUtils;
 
 import junit.framework.Assert;
 
@@ -34,9 +37,6 @@ public class RepositoriesIntegrationTest {
 	@Autowired
 	private UserRepository userRepository;
 
-	private static final int BASIC_PLAN_ID = 1;
-	private static final int BASIC_ROLE_ID = 1;
-	
 	
 	@Before
 	public void init() {
@@ -47,9 +47,9 @@ public class RepositoriesIntegrationTest {
 	
 	@Test
 	public void testCreateNewPlan() throws Exception {
-		Plan basicPlan = createBasicPlan();
+		Plan basicPlan = createPlan(PlansEnum.BASIC);
 		planRepository.save(basicPlan);
-		Plan retrievedPlan = planRepository.findOne(BASIC_PLAN_ID);
+		Plan retrievedPlan = planRepository.findOne(PlansEnum.BASIC.getId());
 		Assert.assertNotNull(retrievedPlan);
 	}
 	
@@ -57,27 +57,25 @@ public class RepositoriesIntegrationTest {
 	@Test
     public void testCreateNewRole() throws Exception {
 
-        Role userRole  = createBasicRole();
+        Role userRole  = createRole(RolesEnum.BASIC);
         roleRepository.save(userRole);
 
-        Role retrievedRole = roleRepository.findOne(BASIC_ROLE_ID);
+        Role retrievedRole = roleRepository.findOne(RolesEnum.BASIC.getId());
         Assert.assertNotNull(retrievedRole);
     }
 
     @Test
     public void createNewUser() throws Exception {
 
-        Plan basicPlan = createBasicPlan();
+        Plan basicPlan = createPlan(PlansEnum.BASIC);
         planRepository.save(basicPlan);
         
-        User basicUser = createBasicUser();
+        User basicUser = UsersUtils.createBasicUser();
         basicUser.setPlan(basicPlan);
         
-        Role basicRole = createBasicRole();
+        Role basicRole = createRole(RolesEnum.BASIC);
         Set<UserRole> userRoles = new HashSet<UserRole>();
-        UserRole userRole = new UserRole();
-        userRole.setUser(basicUser);
-        userRole.setRole(basicRole);
+        UserRole userRole = new UserRole(basicUser, basicRole);
         userRoles.add(userRole);
         
         /** VERY IMPORTANT TO ALWAYS ADD, NEVER SET DIRECTLY */
@@ -87,7 +85,6 @@ public class RepositoriesIntegrationTest {
         	roleRepository.save(ur.getRole());
         }
         
-        basicUser = userRepository.save(basicUser);
         User newlyCreatedUser = userRepository.findOne(basicUser.getId());
         Assert.assertNotNull(newlyCreatedUser);
         Assert.assertTrue(newlyCreatedUser.getId() != 0);
@@ -105,32 +102,26 @@ public class RepositoriesIntegrationTest {
 	
 	
 	/** private methods */
-	private Plan createBasicPlan() {
-		Plan plan = new Plan();
-		plan.setId(BASIC_PLAN_ID);
-		plan.setName("Basic");
-		return plan;
+	private Plan createPlan(PlansEnum plansEnum) {
+		return new Plan(plansEnum);
 	}
 	
-	private Role createBasicRole() {
-		Role role = new Role();
-		role.setId(BASIC_ROLE_ID);
-		role.setName("ROLE_USER");
-		return role;
+	private Role createRole(RolesEnum rolesEnum) {
+		return new Role(rolesEnum);
 	}
 	
-	private User createBasicUser() {
-		User user = new User();
-		user.setUsername("basicUser");
-		user.setPassword("secret");
-		user.setEmail("m@example.com");
-		user.setFirstName("Mike");
-		user.setLastName("Perez");
-		user.setPhoneNumber("123456789");
-		user.setCountry("USA");
-		user.setEnabled(true);
-		user.setDescription("test");
-		user.setProfileImageUrl("https://www.google.com/images/basicuser");
-		return user;
-	}
+//	private User createBasicUser() {
+//		User user = new User();
+//		user.setUsername("basicUser");
+//		user.setPassword("secret");
+//		user.setEmail("m@example.com");
+//		user.setFirstName("Mike");
+//		user.setLastName("Perez");
+//		user.setPhoneNumber("123456789");
+//		user.setCountry("USA");
+//		user.setEnabled(true);
+//		user.setDescription("test");
+//		user.setProfileImageUrl("https://www.google.com/images/basicuser");
+//		return user;
+//	}
 }
