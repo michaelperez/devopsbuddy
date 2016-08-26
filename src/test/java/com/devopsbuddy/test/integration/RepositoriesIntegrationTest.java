@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -37,6 +39,7 @@ public class RepositoriesIntegrationTest {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Rule public TestName testName = new TestName();
 	
 	@Before
 	public void init() {
@@ -67,23 +70,28 @@ public class RepositoriesIntegrationTest {
     @Test
     public void createNewUser() throws Exception {
 
-        Plan basicPlan = createPlan(PlansEnum.BASIC);
-        planRepository.save(basicPlan);
+    	String username = testName.getMethodName();
+    	String email = testName.getMethodName() + "@devopsbuddy.com";
+    	
+//        Plan basicPlan = createPlan(PlansEnum.BASIC);
+//        planRepository.save(basicPlan);
+//        
+    	
+        User basicUser = UserUtils.createBasicUser(username, email);
+
+//        basicUser.setPlan(basicPlan);
         
-        User basicUser = UserUtils.createBasicUser();
-        basicUser.setPlan(basicPlan);
-        
-        Role basicRole = createRole(RolesEnum.BASIC);
-        Set<UserRole> userRoles = new HashSet<UserRole>();
-        UserRole userRole = new UserRole(basicUser, basicRole);
-        userRoles.add(userRole);
-        
-        /** VERY IMPORTANT TO ALWAYS ADD, NEVER SET DIRECTLY */
-        basicUser.getUserRoles().addAll(userRoles);
-        
-        for (UserRole ur : userRoles) {
-        	roleRepository.save(ur.getRole());
-        }
+//        Role basicRole = createRole(RolesEnum.BASIC);
+//        Set<UserRole> userRoles = new HashSet<UserRole>();
+//        UserRole userRole = new UserRole(basicUser, basicRole);
+//        userRoles.add(userRole);	
+//        
+//        /** VERY IMPORTANT TO ALWAYS ADD, NEVER SET DIRECTLY */
+//        basicUser.getUserRoles().addAll(userRoles);
+//        
+//        for (UserRole ur : userRoles) {
+//        	roleRepository.save(ur.getRole());
+//        }
         
         User newlyCreatedUser = userRepository.findOne(basicUser.getId());
         Assert.assertNotNull(newlyCreatedUser);
@@ -100,7 +108,11 @@ public class RepositoriesIntegrationTest {
 
     @Test
     public void testDeleteUser() throws Exception {
-    	User basicUser = createUser();
+    	
+    	String username = testName.getMethodName();
+    	String email = testName.getMethodName() + "@devopsbuddy.com";
+    	
+    	User basicUser = createUser(username, email);
     	userRepository.delete(basicUser.getId());
     }
 	
@@ -113,11 +125,11 @@ public class RepositoriesIntegrationTest {
 		return new Role(rolesEnum);
 	}
 	
-	private User createUser() {
+	private User createUser(String userName, String email) {
 		Plan basicPlan = createPlan(PlansEnum.BASIC);
 		planRepository.save(basicPlan);
 		
-		User basicUser = UserUtils.createBasicUser();
+		User basicUser = UserUtils.createBasicUser(userName, email);
         basicUser.setPlan(basicPlan);
         
         Role basicRole = createRole(RolesEnum.BASIC);
