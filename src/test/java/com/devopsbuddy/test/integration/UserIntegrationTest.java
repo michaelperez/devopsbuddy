@@ -28,7 +28,7 @@ import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DevopsbuddyApplication.class)
-public class RepositoriesIntegrationTest {
+public class UserIntegrationTest extends AbstractIntegrationTest {
 
 	@Autowired
 	private PlanRepository planRepository;
@@ -117,31 +117,31 @@ public class RepositoriesIntegrationTest {
     }
 	
 	/** private methods */
-	private Plan createPlan(PlansEnum plansEnum) {
-		return new Plan(plansEnum);
-	}
-	
-	private Role createRole(RolesEnum rolesEnum) {
-		return new Role(rolesEnum);
-	}
-	
-	private User createUser(String userName, String email) {
-		Plan basicPlan = createPlan(PlansEnum.BASIC);
-		planRepository.save(basicPlan);
-		
-		User basicUser = UserUtils.createBasicUser(userName, email);
-        basicUser.setPlan(basicPlan);
-        
-        Role basicRole = createRole(RolesEnum.BASIC);
-        roleRepository.save(basicRole);
-        
-        Set<UserRole> userRoles = new HashSet<UserRole>();
-        UserRole userRole = new UserRole(basicUser, basicRole);
-        userRoles.add(userRole);
-        
-        basicUser.getUserRoles().addAll(userRoles);
-        basicUser = userRepository.save(basicUser);
-        
-        return basicUser;        
-	}
+//	protected Plan createPlan(PlansEnum plansEnum) {
+//		return new Plan(plansEnum);
+//	}
+//	
+//	protected Role createRole(RolesEnum rolesEnum) {
+//		return new Role(rolesEnum);
+//	}
+//	
+//	protected User createUser(String userName, String email) {
+//		Plan basicPlan = createPlan(PlansEnum.BASIC);
+//		planRepository.save(basicPlan);
+//		
+//		User basicUser = UserUtils.createBasicUser(userName, email);
+//        basicUser.setPlan(basicPlan);
+//        
+//        Role basicRole = createRole(RolesEnum.BASIC);
+//        roleRepository.save(basicRole);
+//        
+//        Set<UserRole> userRoles = new HashSet<UserRole>();
+//        UserRole userRole = new UserRole(basicUser, basicRole);
+//        userRoles.add(userRole);
+//        
+//        basicUser.getUserRoles().addAll(userRoles);
+//        basicUser = userRepository.save(basicUser);
+//        
+//        return basicUser;        
+//	}
 }
