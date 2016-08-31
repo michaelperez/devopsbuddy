@@ -20,33 +20,38 @@ import com.devopsbuddy.backend.persistence.converters.LocalDateTimeAttributeConv
 
 @Entity
 public class PasswordResetToken implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private static final Logger LOG = LoggerFactory.getLogger(PasswordResetToken.class);
-	
-	private final static int DEFAULT_TOKEN_LENGTH_IN_MINUTES = 120;
-	
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-	
-	@Column(unique = true)
-	private String token;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-	private User user;
-	
-	@Column(name="expiry_date")
-	@Convert(converter=LocalDateTimeAttributeConverter.class)
-	private LocalDateTime expiryDate;
 
-	public PasswordResetToken() {
-		
-	}
-	
-	/**
+    /** The Serial Version UID for Serializable classes. */
+    private static final long serialVersionUID = 1L;
+
+    /** The application logger */
+    private static final Logger LOG = LoggerFactory.getLogger(PasswordResetToken.class);
+
+    private final static int DEFAULT_TOKEN_LENGTH_IN_MINUTES = 120;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(unique = true)
+    private String token;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "expiry_date")
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
+    private LocalDateTime expiryDate;
+
+    /**
+     * Default constructor.
+     */
+    public PasswordResetToken() {
+
+    }
+
+    /**
      * Full constructor.
      * @param token The user token. It must not be null.
      * @param user The user for which the token should be created It must not be null.
@@ -67,8 +72,8 @@ public class PasswordResetToken implements Serializable {
         this.user = user;
         expiryDate = creationDateTime.plusMinutes(expirationInMinutes);
     }
-	
-	public long getId() {
+
+    public long getId() {
         return id;
     }
 
@@ -115,5 +120,4 @@ public class PasswordResetToken implements Serializable {
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
     }
-	
 }

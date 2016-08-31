@@ -151,5 +151,8 @@ public class PasswordResetTokenIntegrationTest extends AbstractIntegrationTest {
         return passwordResetToken;
 
     }
-    
+
+
+
+
 }
